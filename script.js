@@ -1,31 +1,24 @@
 const localStorageKey = 'to-do-list-gn'
 
-function validateIfExistsNewTask()
-{
+const validateIfExistsNewTask = () => {
     let values     = JSON.parse(localStorage.getItem(localStorageKey) || "[]")
     let inputValue = document.getElementById('input-new-task').value
     let exists     = values.find(x => x.name == inputValue)
     return !exists ? false : true
 }
 
-function newTask()
-{
+const newTask = () =>{
     let input = document.getElementById('input-new-task')
     input.style.border = ''
-
-    // validation
-    if(!input.value)
-    {
+    if(!input.value) {
         input.style.border = '1px solid red'
         alert('Digite algo para inserir em sua lista')
         return;
     }
-    if(validateIfExistsNewTask())
-    {
+    if(validateIfExistsNewTask()) {
         alert('Já existe uma task com essa descrição')
         return;
     }
-    // increment to localStorage
     let values = JSON.parse(localStorage.getItem(localStorageKey) || "[]")
     values.push({
         name: input.value,
@@ -37,23 +30,7 @@ function newTask()
 }
 
 
-// const existUser = () => {
-//     const user = JSON.parse(localStorage.getItem('user'));
-//     if(user.isLogged == false) window.href();    
-// }
-
-const createUser = () => {
-    const user = {
-        id: 2,
-        username: 'Gabriel',
-        password: '1234'
-    };
-
-    sessionStorage.setItem('user', JSON.stringify(user));
-}
-
-function showValues()
-{
+const showValues = () => {
     const user = JSON.parse(sessionStorage.getItem('user'))
     let values = JSON.parse(localStorage.getItem('to-do-list-gn') || "[]");
     const sortedValues = values.filter(item => item.userId == user.id);
@@ -65,22 +42,36 @@ function showValues()
     }
 }
 
-const removeItem = (data) => 
-{
+const removeItem = (data) => {
     let values = JSON.parse(localStorage.getItem(localStorageKey) || "[]")
-    let index = values.findIndex(x => x.name == data)
+    let index = values.findIndex(task => task.name == data)
     values.splice(index,1)
     localStorage.setItem(localStorageKey,JSON.stringify(values))
     showValues()
 }
 
-showValues()
-// createUser()
 
-const login = (username, senha) => {
+
+const createUser = (username, password) => {
     let users = JSON.parse(localStorage.getItem('users') || "[]");
-    const validUser = users.find( user => user.password == senha && user.name == username);
+    const lastId = sessionStorage.getItem('lastId') || 0;
+    const user = {
+        id: lastId + 1,
+        username: username,
+        password: password
+    };
+
+    users.push(user);
+    localStorage.setItem('lastId');
+    localStorage.setItem('users', JSON.stringify(users));
+    
+    login(username, password);
+}
+
+const login = (username, password) => {
+    let users = JSON.parse(localStorage.getItem('users') || "[]");
+    const validUser = users.find( user => user.password == password && user.name == username);
     if(validUser){
         widndow.href()
-    }
+    };
 }   
