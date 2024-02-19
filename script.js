@@ -52,26 +52,35 @@ const removeItem = (data) => {
 
 
 
-const createUser = (username, password) => {
+const createUser = () => {
     let users = JSON.parse(localStorage.getItem('users') || "[]");
     const lastId = sessionStorage.getItem('lastId') || 0;
     const user = {
         id: lastId + 1,
-        username: username,
-        password: password
+        username: 'Gabriel',
+        password: '123456'
     };
 
+    console.log(user);
     users.push(user);
-    localStorage.setItem('lastId');
+    localStorage.setItem('lastId', lastId + 1);
     localStorage.setItem('users', JSON.stringify(users));
     
-    login(username, password);
+    login();
 }
 
-const login = (username, password) => {
+const login = () => {
+
+    const usernameInput = document.getElementById('usernameInput').value
+    const passwordInput = document.getElementById('passwordInput').value
+    console.log(`Username: ${usernameInput} password: ${passwordInput}`)
     let users = JSON.parse(localStorage.getItem('users') || "[]");
-    const validUser = users.find( user => user.password == password && user.name == username);
+    console.log(users);
+    const validUser = users.find( user => user.password == passwordInput && user.username == usernameInput);
+    console.log(validUser);
     if(validUser){
-        widndow.href()
+        window.location.href ='./index.html'
     };
 }   
+
+createUser();
