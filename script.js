@@ -54,16 +54,20 @@ const removeItem = (data) => {
 
 const createUser = () => {
     let users = JSON.parse(localStorage.getItem('users') || "[]");
-    const lastId = sessionStorage.getItem('lastId') || 0;
+    if(users.length >= 1){
+        return;
+    }
+    let lastId = localStorage.getItem('lastId') || 0;
+    lastId++;
     const user = {
-        id: lastId + 1,
+        id: lastId,
         username: 'Gabriel',
         password: '123456'
     };
 
     console.log(user);
     users.push(user);
-    localStorage.setItem('lastId', lastId + 1);
+    localStorage.setItem('lastId', lastId);
     localStorage.setItem('users', JSON.stringify(users));
     
     login();
@@ -73,12 +77,11 @@ const login = () => {
 
     const usernameInput = document.getElementById('usernameInput').value
     const passwordInput = document.getElementById('passwordInput').value
-    console.log(`Username: ${usernameInput} password: ${passwordInput}`)
     let users = JSON.parse(localStorage.getItem('users') || "[]");
-    console.log(users);
     const validUser = users.find( user => user.password == passwordInput && user.username == usernameInput);
     console.log(validUser);
     if(validUser){
+        localStorage.setItem('user', JSON.stringify(validUser));
         window.location.href ='./index.html'
     };
 }   
