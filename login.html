@@ -4,28 +4,44 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./loginStyles.css">
-    <link rel="stylesheet" href="./assets/fonts/fonts.css">
+    <link rel="stylesheet" href="estilos/media-query.css">
+    <link rel="stylesheet" href="estilos/style.css">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Prpjeto Login</title>
     <title>To Do List | GN</title>
 </head>
 <body>
-    <div class="mainContainer">
-        <div class="loginFormContainer">
-            <h1 style>
-                Task Manager
-            </h1>
-            <input id="usernameInput" class="formInput">
-            </input>
-            <input type="password" id="passwordInput" class="formInput">
-            </input>
-            <p>
-                Não tem uma conta? <span>cadastre-se</span>
-            </p>
-            <button onclick="login()" class="loadingButton">
-                Login
-            </button>
-        </div>
-    </div>
+    <main>
+        <section id="login">
+            <div id="imagen">
+
+            </div>
+            <div id="formulario">
+                <h1>login</h1>
+                <p>Seja benvido(a) novamente. faça login para acessar sua conta e poder fazer as configurações no seu anbiente.</p>
+                <form action="cadastro.php" method="post" autocomplete="on">
+                    <div class="campo">
+                        <span class="material-icons md-18">person</span>
+
+                        <input type="email" name="login" id="ilogin" placeholder="seu e-mail" autocapitalize="e-mail" required minlength="30">
+
+                        <label for="iemail">Login:</label>
+                    </div>
+                    <div class="campo">
+                        <span class="material-icons md-18">vpn_key</span>
+
+                        <input type="password" name="senha" id="isenha"   autocomplete="current-password" required maxlength="8" maxlength="15" placeholder="sua senha">
+
+                        <label for="isenha">Senha:</label>
+                    </div>
+                    <input type="submit" value="Entrar" onclick="login()">
+                    <a href="index.html">Esqueci a senha <span class="material-icons md-18">mail</span></a> 
+                    
+                </form>
+            </div>
+        </section>
+    </main>
 </body>
 <script src="script.js"></script>
 </html>
