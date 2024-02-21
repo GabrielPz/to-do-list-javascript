@@ -1,22 +1,23 @@
 :root{
-    --color-dark: rgb(14, 14, 14);
-    --color-dark2: rgb(32, 32, 32);
-    --color-dark3: rgb(22, 22, 22);
-    --color-white: #fff;
-    --color-green: rgb(103, 195, 80);
-    --color-green2: rgb(51, 149, 26);
-    --color-red: rgb(184, 40, 35);
-    --color-red2: rgb(146, 22, 17);
+        --color-01:#3C3633;
+        --color-02:#747264;
+        --color-03:#E0CCBE;
+        --color-04:#EEEDEB;
 }
 
-body{
+
+
+body, html{
     font-family: 'Lato';
-    background-color: var(--color-dark);
-    color: var(--color-white);
+    background-image: linear-gradient(to top, var(--color-02), var(--color-01));
+    color: var(--color-04);
+    background-repeat: no-repeat;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 4rem;
+    width: 100vw;
+    height: 100vh;
 }
 
 .content{
@@ -47,7 +48,7 @@ body{
 
 #btn-new-task{
     background-color: var(--color-dark2);
-    color: var(--color-white);
+    color: var(--color-04);
     border-radius: 50%;
     width: 50px;
     height: 50px;
@@ -85,7 +86,7 @@ body{
 #btn-ok{
     border: none;
     background-color: var(--color-green);
-    color: var(--color-white);
+    color: var(--color-04);
     padding: .4rem .8rem;
     border-radius: 50%;
     width: 50px;
