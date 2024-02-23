@@ -1,89 +1,179 @@
-const localStorageKey = 'to-do-list-gn'
+var localStorageKey = 'to-do-list-gn';
 
-const validateIfExistsNewTask = () => {
-    let values     = JSON.parse(localStorage.getItem(localStorageKey) || "[]")
-    let inputValue = document.getElementById('input-new-task').value
-    let exists     = values.find(x => x.name == inputValue)
-    return !exists ? false : true
+function validateIfExistsNewTask() {
+    var values = JSON.parse(localStorage.getItem(localStorageKey) || "[]");
+    var inputValue = document.getElementById('input-new-task').value;
+    var exists = values.find(x => x.name === inputValue);
+    return !!exists;
 }
 
-const newTask = () =>{
-    let input = document.getElementById('input-new-task')
-    input.style.border = ''
-    if(!input.value) {
-        input.style.border = '1px solid red'
-        alert('Digite algo para inserir em sua lista')
+function newTask() {
+    var input = document.getElementById('input-new-task');
+    input.style.border = '';
+    if (!input.value) {
+        input.style.border = '1px solid red';
+        alert('Digite algo para inserir em sua lista');
         return;
     }
-    if(validateIfExistsNewTask()) {
-        alert('Já existe uma task com essa descrição')
+    if (validateIfExistsNewTask()) {
+        alert('Já existe uma task com essa descrição');
         return;
     }
-    let values = JSON.parse(localStorage.getItem(localStorageKey) || "[]")
+    var values = JSON.parse(localStorage.getItem(localStorageKey) || "[]");
     values.push({
         name: input.value,
-        userId: 2
-    })
-    localStorage.setItem(localStorageKey,JSON.stringify(values))
-    showValues()
-    input.value = ''
+        userId: 2 // Assumindo um userId fixo; isso deve ser dinâmico em uma aplicação real
+    });
+    localStorage.setItem(localStorageKey, JSON.stringify(values));
+    showValues();
+    input.value = '';
 }
 
+function showValues() {
+    var user = JSON.parse(sessionStorage.getItem('user'));
+    var values = JSON.parse(localStorage.getItem(localStorageKey) || "[]");
+    var sortedValues = values.filter(item => item.userId === user.id);
+    var list = document.getElementById('to-do-list');
+    console.log(user, values, sortedValues, list);
+    list.innerHTML = '';
+    sortedValues.forEach(function (item) {
+        list.innerHTML += `<li>${item.name}<button id='btn-ok' onclick='removeItem("${item.name}")'><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/></svg></button></li>`;
+    });
+}
 
-const showValues = () => {
-    const user = JSON.parse(sessionStorage.getItem('user'))
-    let values = JSON.parse(localStorage.getItem('to-do-list-gn') || "[]");
-    const sortedValues = values.filter(item => item.userId == user.id);
-    let list = document.getElementById('to-do-list');
-    list.innerHTML = ''
-    for(let i = 0; i < sortedValues.length; i++)
-    {
-        list.innerHTML += `<li>${sortedValues[i]['name']}<button id='btn-ok' onclick='removeItem("${sortedValues[i]['name']}")'><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z"/></svg></button></li>`
+function removeItem(data) {
+    var values = JSON.parse(localStorage.getItem(localStorageKey) || "[]");
+    var index = values.findIndex(task => task.name === data);
+    if (index > -1) {
+        values.splice(index, 1);
     }
+    localStorage.setItem(localStorageKey, JSON.stringify(values));
+    showValues();
 }
 
-const removeItem = (data) => {
-    let values = JSON.parse(localStorage.getItem(localStorageKey) || "[]")
-    let index = values.findIndex(task => task.name == data)
-    values.splice(index,1)
-    localStorage.setItem(localStorageKey,JSON.stringify(values))
-    showValues()
-}
-
-
-
-const createUser = () => {
-    let users = JSON.parse(localStorage.getItem('users') || "[]");
-    if(users.length >= 1){
-        return;
-    }
-    let lastId = localStorage.getItem('lastId') || 0;
+function createUser(username, password) {
+    var users = JSON.parse(localStorage.getItem('users') || "[]");
+    var lastId = parseInt(localStorage.getItem('lastId') || "0");
     lastId++;
-    const user = {
+
+    var newUser = {
         id: lastId,
-        username: 'Gabriel',
-        password: '123456'
+        username: username,
+        password: password // Em produção, a senha deve ser criptografada
     };
 
-    console.log(user);
-    users.push(user);
-    localStorage.setItem('lastId', lastId);
+    users.push(newUser);
     localStorage.setItem('users', JSON.stringify(users));
-    
-    login();
+    localStorage.setItem('lastId', lastId.toString());
 }
 
-const login = () => {
+function login() {
+    var usernameInput = document.getElementById('usernameInput').value;
+    var passwordInput = document.getElementById('passwordInput').value;
+    var users = JSON.parse(localStorage.getItem('users') || "[]");
+    var validUser = users.find(user => user.password === passwordInput && user.username === usernameInput);
 
-    const usernameInput = document.getElementById('usernameInput').value
-    const passwordInput = document.getElementById('passwordInput').value
-    let users = JSON.parse(localStorage.getItem('users') || "[]");
-    const validUser = users.find( user => user.password == passwordInput && user.username == usernameInput);
-    console.log(validUser);
-    if(validUser){
-        localStorage.setItem('user', JSON.stringify(validUser));
-        window.location.href ='./index.html'
+    if (validUser) {
+        sessionStorage.setItem('user', JSON.stringify(validUser));
+        window.location.href = './index.html';
+    } else {
+        alert('Usuário ou senha inválidos!');
+    }
+}
+
+function addUser(username, password) {
+    var users = JSON.parse(localStorage.getItem('users') || "[]");
+    var lastId = parseInt(localStorage.getItem('lastId') || "0");
+
+    var userExists = users.some(user => user.username === username);
+    if (userExists) {
+        alert('Usuário já existe!');
+        return false;
+    }
+
+    lastId++;
+    var newUser = {
+        id: lastId,
+        username: username,
+        password: password
     };
-}   
 
-createUser();
+    users.push(newUser);
+    localStorage.setItem('users', JSON.stringify(users));
+    localStorage.setItem('lastId', lastId.toString());
+
+    alert('Usuário adicionado com sucesso!');
+    return true;
+}
+
+
+function login() {
+    const usernameInput = document.getElementById('iemail').value;
+    const passwordInput = document.getElementById('isenha').value;
+    const users = JSON.parse(localStorage.getItem('users') || "[]");
+    const validUser = users.find(user => user.password === passwordInput && user.username === usernameInput);
+
+    if (validUser) {
+        localStorage.setItem('logado', JSON.stringify({username: validUser.username, logged: true}));
+        window.location.href = 'index.html';
+    } else {
+        alert('Usuário ou senha inválidos!');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Verifica se a URL atual corresponde a 'index.html'
+    if (window.location.pathname.endsWith('index.html')) {
+        verificarLogin();
+    }
+});
+
+
+function verificarLogin() {
+    const usuarioLogado = JSON.parse(localStorage.getItem('logado'));
+    if (!usuarioLogado || !usuarioLogado.logged) {
+        // Altere o caminho para a página de login conforme necessário
+        window.location.href = 'login.html';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Identifica a página atual baseada no pathname
+    const path = window.location.pathname;
+    const isLoginPage = path.includes('login.html') || path === '/' || path.endsWith('/login'); // Ajuste conforme necessário
+    const isIndexPage = path.includes('index.html') || path.endsWith('/index'); // Ajuste conforme necessário
+
+    if (isLoginPage) {
+        verificarLoginParaLogin();
+    } else if (isIndexPage) {
+        verificarLoginParaIndex();
+    }
+
+    // Configura o botão de logout se presente
+    const btnLogout = document.getElementById('btn-logout');
+    if (btnLogout) {
+        btnLogout.addEventListener('click', deslogar);
+    }
+});
+
+function verificarLoginParaLogin() {
+    const usuarioLogado = JSON.parse(localStorage.getItem('logado'));
+    // Se já estiver logado, redireciona para a index.html
+    if (usuarioLogado && usuarioLogado.logged) {
+        window.location.href = 'index.html';
+    }
+}
+
+function verificarLoginParaIndex() {
+    const usuarioLogado = JSON.parse(localStorage.getItem('logado'));
+    // Se não estiver logado, redireciona para a login.html
+    if (!usuarioLogado || !usuarioLogado.logged) {
+        window.location.href = 'login.html';
+    }
+}
+
+function deslogar() {
+    localStorage.removeItem('logado');
+    window.location.href = 'login.html';
+}
+
