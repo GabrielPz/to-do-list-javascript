@@ -8,8 +8,10 @@ function validateIfExistsNewTask() {
 }
 
 function newTask() {
-    var input = document.getElementById('input-new-task');
+    let input = document.getElementById('input-new-task');
     input.style.border = '';
+    let user = JSON.parse(localStorage.getItem('logado') || "{}");
+    let userId = user.id;
     if (!input.value) {
         input.style.border = '1px solid red';
         alert('Digite algo para inserir em sua lista');
@@ -19,10 +21,10 @@ function newTask() {
         alert('Já existe uma task com essa descrição');
         return;
     }
-    var values = JSON.parse(localStorage.getItem(localStorageKey) || "[]");
+    let values = JSON.parse(localStorage.getItem(localStorageKey) || "[]");
     values.push({
         name: input.value,
-        userId: 2 // Assumindo um userId fixo; isso deve ser dinâmico em uma aplicação real
+        userId: userId // Assumindo um userId fixo; isso deve ser dinâmico em uma aplicação real
     });
     localStorage.setItem(localStorageKey, JSON.stringify(values));
     showValues();
@@ -30,9 +32,10 @@ function newTask() {
 }
 
 function showValues() {
-    var user = JSON.parse(sessionStorage.getItem('user'));
+    var user = JSON.parse(localStorage.getItem('logado'));
     var values = JSON.parse(localStorage.getItem(localStorageKey) || "[]");
     var sortedValues = values.filter(item => item.userId === user.id);
+    console.log(sortedValues);
     var list = document.getElementById('to-do-list');
     console.log(user, values, sortedValues, list);
     list.innerHTML = '';
@@ -88,7 +91,7 @@ function addUser(username, password) {
     var userExists = users.some(user => user.username === username);
     if (userExists) {
         alert('Usuário já existe!');
-        return false;
+        return;
     }
 
     lastId++;
@@ -101,9 +104,9 @@ function addUser(username, password) {
     users.push(newUser);
     localStorage.setItem('users', JSON.stringify(users));
     localStorage.setItem('lastId', lastId.toString());
-
+    localStorage.setItem('logado', JSON.stringify({username: username, id: lastId, logged: true}));
     alert('Usuário adicionado com sucesso!');
-    return true;
+    window.location.href = 'index.html'
 }
 
 
@@ -114,7 +117,7 @@ function login() {
     const validUser = users.find(user => user.password === passwordInput && user.username === usernameInput);
 
     if (validUser) {
-        localStorage.setItem('logado', JSON.stringify({username: validUser.username, logged: true}));
+        localStorage.setItem('logado', JSON.stringify({username: validUser.username, id: validUser.id, logged: true}));
         window.location.href = 'index.html';
     } else {
         alert('Usuário ou senha inválidos!');
@@ -123,6 +126,7 @@ function login() {
 
 document.addEventListener('DOMContentLoaded', function() {
     // Verifica se a URL atual corresponde a 'index.html'
+    showValues();
     if (window.location.pathname.endsWith('index.html')) {
         verificarLogin();
     }
